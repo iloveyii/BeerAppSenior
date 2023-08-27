@@ -52,7 +52,6 @@ const TypeSelect: React.FC<{beerList: Beer[], setBeerList: any}> = ( {beerList, 
       (async() => {
         if(typeName === 'ALL') {
           fetchData((data: Beer[])=> {
-            console.log('fetched typed', data);
             setBeerList([...data])
           })
         } else {
