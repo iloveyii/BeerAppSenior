@@ -20,6 +20,11 @@ const searchBeerList = (query: string, isAutoComplete = false) =>
     params: { query },
   });
 
+const filterBeerListByType = (by_type: string) =>
+  axios.get(`${API}breweries`, {
+    params: { by_type },
+  });
+
 const getBeerMetaData = (params?: ApiParams) => axios.get(`${API}breweries/meta`, { params });
 
-export { getBeer, getBeerList, getRandomBeerList, searchBeerList, getBeerMetaData };
+export { getBeer, getBeerList, getRandomBeerList, searchBeerList, getBeerMetaData, filterBeerListByType };
