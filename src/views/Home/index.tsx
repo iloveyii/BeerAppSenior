@@ -8,9 +8,35 @@ import styles from './Home.module.css';
 const Home = () => {
   const [beerList, setBeerList] = useState<Array<Beer>>([]);
   const [savedList, setSavedList] = useState<Array<Beer>>([]);
+  const [beerFiltered, setBeerFiltered] = useState<Array<Beer>>([]);
 
   // eslint-disable-next-line
   useEffect(fetchData.bind(this, setBeerList), []);
+  useEffect(() => {
+    setBeerFiltered(beerList);
+  }, [beerList]);
+
+  const onChangeFilter = (e:any) => {
+    e.preventDefault();
+    const list = beerList.filter( b => b.name.toLowerCase().includes(e.target.value));
+    setBeerFiltered(list);
+  }
+
+  const handleChange = (beer: Beer) => {
+    const exists = savedList.find((b: Beer) => b.id === beer.id)
+    if (!exists) {
+      setSavedList([...savedList, beer]);
+    }
+  }
+  
+  const onClearFavourites = () => {
+    setSavedList([]);
+  }
+
+  const onReloadAll = (e: any) => {
+    setBeerList([]);
+    fetchData(setBeerList);
+  }
 
   return (
     <article>
@@ -19,13 +45,13 @@ const Home = () => {
           <Paper>
             <div className={styles.listContainer}>
               <div className={styles.listHeader}>
-                <TextField label='Filter...' variant='outlined' />
-                <Button variant='contained'>Reload list</Button>
+                <TextField onChange={(e) => onChangeFilter(e)} label='Filter...' variant='outlined' />
+                <Button onClick={onReloadAll} variant='contained'>Reload list</Button>
               </div>
               <ul className={styles.list}>
-                {beerList.map((beer, index) => (
+                {beerFiltered.map((beer, index) => (
                   <li key={index.toString()}>
-                    <Checkbox />
+                    <Checkbox onChange={() => handleChange(beer)} />
                     <Link component={RouterLink} to={`/beer/${beer.id}`}>
                       {beer.name}
                     </Link>
@@ -39,7 +65,7 @@ const Home = () => {
             <div className={styles.listContainer}>
               <div className={styles.listHeader}>
                 <h3>Saved items</h3>
-                <Button variant='contained' size='small'>
+                <Button onClick={onClearFavourites} variant='contained' size='small'>
                   Remove all items
                 </Button>
               </div>
